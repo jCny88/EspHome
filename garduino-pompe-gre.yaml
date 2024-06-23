@@ -1,0 +1,65 @@
+esphome:
+  name: garduino-pompe-gre
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Garduino-Pompe-Gre"
+    password: "oB2fJfIph35G"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "af76f2dd9bcc301c60706bf6b10d487c"
+
+i2c:
+  sda: GPIO4
+  scl: GPIO5
+  scan: True
+  id: bus_a
+  
+# Example configuration entry
+sensor:
+  - platform: adc
+    pin: A0
+    filters:
+      - lambda: |-
+          if (x > 0.7) {
+            return 0;
+          } else if (x < 0.26) {
+            return 100;
+          } else {
+            return (0.7-x) / (0.7-0.26) * 100.0;
+          }
+    unit_of_measurement: "%"
+    name: "soil moisture sensor"
+    update_interval: 600s
+  - platform: bme280
+    temperature:
+      name: "BME280 Temperature Basilic"
+      oversampling: 16x
+    pressure:
+      name: "BME280 Pressure Basilic"
+    humidity:
+      name: "BME280 Humidity Basilic"
+    address: 0x76
+    update_interval: 600s
+    
+# Example configuration entry
+switch:
+  - platform: gpio
+    pin: 14
+    id: mosfet
+    name: "pompe basilic"
+    icon: "mdi:watering-can-outline"

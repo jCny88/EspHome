@@ -1,0 +1,53 @@
+esphome:
+  name: 12v_mosfet
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "12V Mosfet Fallback Hotspot"
+    password: "BmnaVfrYxLIa"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO3
+      mode: INPUT
+    name: "Interrupteur LEDs Bureau"
+    id: interrupteur
+    filters:
+      - delayed_on: 200ms
+      - delayed_off: 200ms
+    on_press:
+      then:
+        - light.toggle: led_1
+        
+  - platform: status
+    name: "statut lampe LEDs bureau"
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO0
+    inverted: false
+    id: output_component1   
+    
+light:
+  - platform: monochromatic
+    name: "Lampe LEDs Bureau"
+    id: led_1
+    output: output_component1
+    

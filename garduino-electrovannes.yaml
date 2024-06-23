@@ -1,0 +1,106 @@
+esphome:
+  name: garduino-electrovannes
+  platform: ESP32
+  board: esp32dev
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "2b2cde081145739e52097439978c9781"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Garduino-Electrovannes"
+    password: "Tc1T9lxD4NXW"
+
+captive_portal:
+  
+# Example configuration entry
+sensor:
+  - platform: adc
+    pin: GPIO36
+    attenuation: 11db
+    filters:
+      - lambda: |-
+          if (x > 3.35) {
+            return 0;
+          } else if (x < 1.2) {
+            return 100;
+          } else {
+            return (3.35-x) / (3.35-1.2) * 100.0;
+          }
+    unit_of_measurement: "%"
+    name: "soil moisture sensor 1 - Persil"
+    update_interval: 60s
+
+  - platform: adc
+    pin: GPIO39
+    attenuation: 11db
+    filters:
+      - lambda: |-
+          if (x > 3.35) {
+            return 0;
+          } else if (x < 1.2) {
+            return 100;
+          } else {
+            return (3.35-x) / (3.35-1.2) * 100.0;
+          }
+    unit_of_measurement: "%"
+    name: "soil moisture sensor 2 - Thym"
+    update_interval: 60s
+
+  - platform: adc
+    pin: GPIO34
+    attenuation: 11db
+    filters:
+      - lambda: |-
+          if (x > 3.35) {
+            return 0;
+          } else if (x < 1.2) {
+            return 100;
+          } else {
+            return (3.35-x) / (3.35-1.2) * 100.0;
+          }
+    unit_of_measurement: "%"
+    name: "soil moisture sensor 3 - Romarin"
+    update_interval: 60s
+  
+# Example configuration entry
+switch:
+  - platform: gpio
+    pin: GPIO13
+    id: mosfet1
+    name: "electrovanne 1 - Crassula"
+    icon: "mdi:watering-can-outline"
+
+  - platform: gpio
+    pin: GPIO18
+    id: mosfet2
+    name: "electrovanne 2 - Persil"
+    icon: "mdi:watering-can-outline"
+
+  - platform: gpio
+    pin: GPIO5
+    id: mosfet3
+    name: "electrovanne 3 - Thym"
+    icon: "mdi:watering-can-outline"
+
+  - platform: gpio
+    pin: GPIO17
+    id: mosfet4
+    name: "electrovanne 4 - Romarin"
+    icon: "mdi:watering-can-outline"
+    
+  - platform: gpio
+    pin: GPIO16
+    id: mosfet5
+    name: "electrovanne 5 - Yukka"
+    icon: "mdi:watering-can-outline"

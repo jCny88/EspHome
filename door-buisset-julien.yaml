@@ -1,0 +1,63 @@
+esphome:
+  name: door-buisset-julien
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "f6d3c8e2dd620bafb705909ecc88ef86"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Door-Buisset-Julien"
+    password: "TAA3N9Vunexi"
+
+captive_portal:
+
+i2c:
+  sda: GPIO4
+  scl: GPIO5
+  scan: True
+  id: bus_a
+
+binary_sensor:
+  - platform: gpio
+    device_class: door
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+    name: "door magnet Julien"
+    id: doorMagnetBuissetJulien
+  - platform: gpio
+    device_class: motion
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+    name: "door PIR Julien"
+    id: doorPirBuissetJulien
+    filters:
+      - invert
+  - platform: gpio
+    device_class: door
+    pin:
+      number: GPIO14
+      mode: INPUT_PULLUP
+    name: "pressure plate Julien Buisset"
+    id: pressurePlateChambreJulienBuisset
+      
+sensor:
+  - platform: aht10
+    temperature:
+      name: "Temperature chambre Julien-porte"
+    humidity:
+      name: "Humidité chambre Julien-porte"
+    update_interval: 60s

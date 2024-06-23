@@ -1,0 +1,36 @@
+esphome:
+  name: magic-switch
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "403ddbaa104eceb1fb414c37cad70b68"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Magic-Switch Fallback Hotspot"
+    password: "GVu7nzV7aU9Q"
+
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO3
+      mode: INPUT_PULLUP
+    name: "Magic Switch"
+    id: magicswitch
+    filters:
+      - invert 
+      - delayed_on: 200ms
+      - delayed_off: 200ms

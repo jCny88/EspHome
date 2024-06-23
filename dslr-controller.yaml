@@ -1,0 +1,36 @@
+esphome:
+  name: dslr-controller
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "1b284c83772b89659e6a13056a2d5827"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Dslr-Controller Fallback Hotspot"
+    password: "0aVfKdRYs8rl"
+
+captive_portal:
+
+switch:
+  - platform: gpio
+    pin: GPIO1
+    id: bouton_declenchement_dslr
+    restore_mode: ALWAYS_ON
+  - platform: template
+    name: "bouton dslr"
+    turn_on_action:
+    - switch.turn_off: bouton_declenchement_dslr
+    - delay: 1000ms
+    - switch.turn_on: bouton_declenchement_dslr

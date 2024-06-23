@@ -1,0 +1,52 @@
+esphome:
+  name: interphone-buisset
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "Xp81sNuoZp7xJSg8AjRhax3OjVhdRQ+wC/I2jcfxtyo="
+
+ota:
+  password: "9bb7c3561de9a479103c4a7f5f1f3d85"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Interphone-Buisset"
+    password: "YJvf6FNbSFUm"
+
+captive_portal:
+    
+switch:
+  - platform: gpio
+    pin: GPIO0
+    id: bouton_ouverture_porte_buisset
+    restore_mode: ALWAYS_ON
+  - platform: template
+    name: "bouton porte buisset C5"
+    turn_on_action:
+    - switch.turn_off: bouton_ouverture_porte_buisset
+    - delay: 1000ms
+    - switch.turn_on: bouton_ouverture_porte_buisset
+  
+binary_sensor:
+  - platform: gpio
+    device_class: motion
+    pin:
+      number: GPIO3
+      mode: INPUT_PULLUP
+    name: "radar_entree_buisset"
+    id: radar_entree_buisset
+    filters:
+      - invert 
+      - delayed_on: 300ms
+      - delayed_off: 300ms

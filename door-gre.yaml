@@ -1,0 +1,40 @@
+esphome:
+  name: door-gre
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "cf723d3f1dfb425ab9911d16cbf53f7c"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Door-Gre Fallback Hotspot"
+    password: "m61rtgCoQRvS"
+
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    device_class: door
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+    name: "door magnet"
+    id: doorMagnet
+  - platform: gpio
+    device_class: motion
+    pin:
+      number: GPIO13
+      mode: INPUT
+    name: "door inside PIR"
+    id: insidePIR

@@ -1,0 +1,53 @@
+esphome:
+  name: led-pannel-controller-n02
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "cb6404ba35c949655b113d866dda0195"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Led-Pannel-Controller-N02"
+    password: "aQN69nx8J0to"
+
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO3
+      mode: INPUT
+    name: "Interrupteur Panneau LED 02"
+    id: interrupteur
+    filters:
+      - delayed_on: 200ms
+      - delayed_off: 200ms
+    on_press:
+      then:
+        - light.toggle: led_1
+        
+  - platform: status
+    name: "statut panneau LED 02"
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO0
+    inverted: false
+    id: output_component1   
+    
+light:
+  - platform: monochromatic
+    name: "Panneau LED 02"
+    id: led_1
+    output: output_component1

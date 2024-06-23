@@ -1,0 +1,56 @@
+esphome:
+  name: door-sha-up
+  platform: ESP8266
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "a83ca421fdc21932d8abad8499e593c1"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Door-Sha-Up Fallback Hotspot"
+    password: "QuHDtmV36DFR"
+
+captive_portal:
+
+i2c:
+  sda: D2
+  scl: D1
+  scan: True
+  id: bus_a
+  
+# Example configuration entry
+sensor:
+  - platform: aht10
+    temperature:
+      name: "Temperature door sha up"
+    humidity:
+      name: "Humidity door sha up"
+    update_interval: 60s
+
+binary_sensor:
+  - platform: gpio
+    device_class: motion
+    pin:
+      number: GPIO13
+      mode: INPUT
+    name: "door inside PIR sha up"
+    id: insidePIR
+
+  - platform: gpio
+    device_class: door
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+    name: "door magnet sha up"
+    id: doorMagnet

@@ -1,0 +1,40 @@
+esphome:
+  name: servo-mac-mini
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "EsHANbzSIOdrkUNvvjhXbBlQqROWK3N7NNioJ/SIqaw="
+
+ota:
+  password: "f01aeb5cae1338be6b121699c38403bb"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Servo-Mac-Mini Fallback Hotspot"
+    password: "9H8NK3ZeO1d2"
+
+captive_portal:
+    
+
+servo:
+  - id: my_servo
+    output: pwm_output
+
+# Example output platform
+# On ESP32, use ledc output
+output:
+  - platform: esp8266_pwm
+    id: pwm_output
+    pin: D1
+    frequency: 50 Hz
