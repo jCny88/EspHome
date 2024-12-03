@@ -1,0 +1,134 @@
+esphome:
+  name: esphome-web-29dea2
+  friendly_name: esp-tableau-maison-cuny
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "VMiLxIsxjsW65w/EQi4LmxifDUGmQgOWjR0gSoVgG+k="
+
+ota:
+
+
+wifi:
+  networks:
+  - ssid: !secret wifi_ssid_1
+    password: !secret wifi_password_1
+  - ssid: !secret wifi_ssid_2
+    password: !secret wifi_password_2
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esphome-Web-29Dea2"
+    password: "ki6a1xIfcQRF"
+
+captive_portal:
+
+i2c:
+  sda: GPIO4
+  scl: GPIO5
+  scan: true
+  id: bus_a
+
+pcf8574:
+  - id: 'pcf8574_hub'
+    address: 0x20
+    pcf8575: true
+
+sensor:
+  - platform: bme280
+    temperature:
+      name: "Temperature sous-sol"
+      oversampling: 16x
+    pressure:
+      name: "Pression sous-sol"
+    humidity:
+      name: "Humidite sous-sol"
+    address: 0x76
+    update_interval: 60s
+
+binary_sensor:
+
+  - platform: gpio
+    device_class: door
+    pin:
+      number: GPIO16
+      mode:
+        
+        input: true
+        pulldown: true
+      inverted: true
+    name: reed_tableau
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+
+  - platform: gpio
+    device_class: motion
+    pin:
+      number: GPIO13
+      mode:
+        input: true
+      inverted: true
+    name: motion_tableau
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+  - platform: gpio
+    device_class: light
+    name: "esp_tableau_maison_cuny_pcf8574_pin_0-escalier"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 0
+      number: 0
+      # One of INPUT or OUTPUT
+      mode:
+        input: true
+      inverted: true
+  - platform: gpio
+    device_class: light
+    name: "esp_tableau_maison_cuny_pcf8574_pin_1-sous_sol"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 1
+      number: 1
+      # One of INPUT or OUTPUT
+      mode:
+        input: true
+      inverted: true
+  - platform: gpio
+    device_class: vibration
+    name: "esp_tableau_maison_cuny_pcf8574_pin_2"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 2
+      number: 2
+      # One of INPUT or OUTPUT
+      mode:
+        input: true
+      inverted: true
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 100ms
+
+switch:
+  - platform: gpio
+    pin: GPIO12
+    id: relay1
+    name: "telerupteur_escalier"
+    on_turn_on:
+    - delay: 200ms
+    - switch.turn_off: relay1
+  - platform: gpio
+    pin: GPIO14
+    id: relay2
+    name: "telerupteur_sous_sol"
+    on_turn_on:
+    - delay: 200ms
+    - switch.turn_off: relay2
